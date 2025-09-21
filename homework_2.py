@@ -26,7 +26,7 @@ for number in range(1, 4):
     car_object = Car(trip_distance= 0, model= models[number - 1], color= colors[number - 1])
     cars.append(car_object)
 
-if 0>= desired_dist:
+if desired_dist <= 0:
     print("error: Не вірно встановленно відстань до фінішу")
     error = True
 
