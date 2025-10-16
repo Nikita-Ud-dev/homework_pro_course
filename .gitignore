@@ -1,4 +1,4 @@
 dj_project_env
 *_env
 *.pyc
-*.sqllite3
+*.sqlite3
