@@ -13,24 +13,28 @@
             {{ form.errors }}
             {% csrf_token %}
                 <div class="mb-3">
-                    <label for="title" class="form-lable">Назва курсу:</label>
-                    <input id="title" maxlength="30" name="title" required type="text" value="{{ form.title.value }}" class="form-control">
+                    <label class="form-lable">Назва курсу:</label>
+                    {{ form.title }}
+<!--                    <input id="title" maxlength="30" name="title" required type="text" value="{{ form.title.value }}" class="form-control">-->
                 </div>
                 <div class="mb-3">
-                    <label for="direction" class="form-lable">Напрямок:</label>
-                    <input id="direction" maxlength="50" name="direction" required type="text" value="{{ form.direction.value }}" class="form-control">
+                    <label class="form-lable">Напрямок:</label>
+                    {{ form.direction }}
+<!--                    <input id="direction" maxlength="50" name="direction" required type="text" value="{{ form.direction.value }}" class="form-control">-->
                 </div>
                 <div class="mb-3">
-                    <label for="description" class="form-lable">Опис:</label>
-                    <textarea class="form-control" id="description" maxlength="500" rows="4" name="description">{{ form.description.value }}</textarea>
+                    <label class="form-lable">Опис:</label>
+                    {{ form.description }}
+<!--                    <textarea class="form-control" id="description" maxlength="500" rows="4" name="description">{{ form.description.value }}</textarea>-->
                 </div>
                 <div class="mb-3">
-                    <label for="list_of_members" class="form-lable">Список учасників:</label>
+                    <label class="form-lable">Список учасників:</label> {{ form.list_of_members.help_text }}
                     {{ form.list_of_members }}
                 </div>
                 <div class="mb-3">
-                    <label for="limit_members" class="form-lable">Кількість учасників:</label>
-                    <input type="number" id="limit_members" value="{{ form.limit_members.value }}" min="5" max="100" class="form-control" required name="limit_members">
+                    <label class="form-lable">Ліміт учасників:</label>
+                    {{ form.limit_members }}
+<!--                    <input type="number" id="limit_members" value="{{ form.limit_members.value }}" min="5" max="100" class="form-control" required name="limit_members">-->
                 </div>
                 <button type="submit" class="btn btn-success">Оновити</button>
                 <a href="{% url 'courses_app:course_list' %}" class="btn btn-secondary">Назад</a>

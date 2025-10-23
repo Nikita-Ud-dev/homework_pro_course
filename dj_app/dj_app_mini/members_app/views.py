@@ -19,7 +19,7 @@ def create_member(request):
             course.save()
             return redirect('members_app:member_list')
     else:
-        form = MemberForm(request.GET)
+        form = MemberForm()
     return render(request,'member/create_member.html', {'form': form})
 
 @login_required

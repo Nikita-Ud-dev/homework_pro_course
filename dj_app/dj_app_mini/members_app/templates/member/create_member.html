@@ -8,28 +8,32 @@
 </head>
 <body>
     <div>
-        <h2>Створити учасника</h2>
+        <h2>Створити учасника:</h2>
         <form method="post">
             {% csrf_token %}
                 <div class="mb-3">
-                    <label for="first_name" class="form-lable">Ім'я</label>
-                    <input id="first_name" maxlength="20" name="first_name" required type="text" value="" class="form-control">
+                    <label class="form-lable">Ім'я:</label> {{ form.first_name.help_text }}
+                    {{ form.first_name }}
+<!--                    <input id="first_name" maxlength="20" name="first_name" required type="text" value="" class="form-control">-->
                 </div>
                 <div class="mb-3">
-                    <label for="last_name" class="form-lable">Прізвище</label>
-                    <input id="last_name" maxlength="30" name="last_name" type="text" value="Unknown" class="form-control" >
+                    <label class="form-lable">Прізвище:</label> {{ form.last_name.help_text }}
+                    {{ form.last_name }}
+<!--                    <input id="last_name" maxlength="30" name="last_name" type="text" value="" class="form-control" >-->
                 </div>
                 <div class="mb-3">
-                    <label for="age" class="form-lable">Вік</label>
-                    <input type="number" class="form-control" id="age" min="16" max="40" name="age">
+                    <label class="form-lable">Вік:</label> {{ form.age.help_text }}
+                    {{ form.age }}
+<!--                    <input type="number" class="form-control" id="age" min="16" required max="40" name="age">-->
                 </div>
                 <div class="mb-3">
-                    <label for="gender" class="form-lable">Стать</label>
-                    <select id="gender" required name="gender">
-                        <option value="">Будь ласка виберіть стать</option>
-                        <option value="M">Чоловіча</option>
-                        <option value="W">Жіноча</option>
-                    </select>
+                    <label class="form-lable">Стать:</label> {{ form.gender.help_text }}
+                    {{ form.gender }}
+<!--                    <select id="gender" required name="gender">-->
+<!--                        <option value="">Будь ласка виберіть стать</option>-->
+<!--                        <option value="M">Чоловіча</option>-->
+<!--                        <option value="W">Жіноча</option>-->
+<!--                    </select>-->
                 </div>
                 <button type="submit" class="btn btn-success">Створити</button>
                 <a href="{% url 'members_app:member_list' %}" class="btn btn-secondary">Назад</a>

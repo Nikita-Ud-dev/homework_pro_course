@@ -8,7 +8,7 @@
 </head>
 <body>
     <h2>Видалити учасника</h2>
-    <p>Ви впевненні що хочете видалити це завдання "{{ member.first_name }} {{ member.last_name }}"?</p>
+    <p>Ви впевненні що хочете видалити цього учасника "{{ member.first_name }} {{ member.last_name }}"?</p>
     <form method="post">
         {% csrf_token %}
             <button type="submit" class="btn btn-danger">Видалити</button>

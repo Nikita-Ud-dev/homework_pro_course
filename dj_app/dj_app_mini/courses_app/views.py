@@ -20,7 +20,7 @@ def create_course(request):
             course.save()
             return redirect('courses_app:course_list')
     else:
-        form = CourseForm(request.GET)
+        form = CourseForm()
     return render(request,'course/create_course.html', {'form': form})
 
 @login_required
@@ -29,13 +29,12 @@ def update_course(request, course_id):
     if request.method == 'POST':
         form = CourseForm(request.POST, instance=course)
         if form.is_valid():
-            members = form.cleaned_data['list_of_members']
-            limit = form.cleaned_data['limit_members']
-            if len(members) > limit:
-                form.add_error('list_of_members', f'Кількість учасників не може перевищувати {limit}.')
-            else:
-                form.save()
-                return redirect('courses_app:course_list')
+            # members = form.cleaned_data['list_of_members']
+            # limit = form.cleaned_data['limit_members']
+            # if len(members) > limit:
+            #     form.add_error('list_of_members', f'Кількість учасників не може перевищувати {limit}.')
+            form.save()
+            return redirect('courses_app:course_list')
     else:
         form = CourseForm(instance=course)
     return render(request,'course/update_course.html', {'form': form})
