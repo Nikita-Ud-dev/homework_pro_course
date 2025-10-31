@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
 from pathlib import Path
 
 from django.conf.global_settings import AUTH_USER_MODEL
@@ -79,8 +78,12 @@ WSGI_APPLICATION = 'dj_app_mini.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'course_db',
+        'USER': 'postgres',
+        'PASSWORD': '1234567',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
