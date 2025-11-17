@@ -51,4 +51,8 @@ def delete_member(request, member_id):
 def history_member_logs(request, member_id):
     member = get_object_or_404(Member, id=member_id)
     logs = get_logs(member)
-    return render(request, 'member/history_logs.html', {'logs': logs})
+    count_logs = logs.count()
+    return render(request, 'member/history_logs.html', {
+        'logs': logs,
+        'count_logs': count_logs,
+    })

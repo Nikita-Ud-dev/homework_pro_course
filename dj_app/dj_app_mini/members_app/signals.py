@@ -8,15 +8,13 @@ from members_app.models import Member
 @receiver(post_save, sender=Member)
 def member_log(sender, instance, created, **kwargs):
     user = get_current_user()
-    print('uuuuu')
     if not user:
-        return print('nooooo')
+        return
     object_id = instance.pk
     if created:
         action_type = 'Створенно'
     else:
         action_type = 'Оновленно'
-    print('22222')
     ActionLog.objects.create(
         name_log=f'{sender.__name__}',
         user=user,

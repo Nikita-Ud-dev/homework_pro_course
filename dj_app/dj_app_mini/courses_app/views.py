@@ -54,7 +54,11 @@ def delete_course(request, course_id):
 def history_course_logs(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     logs = get_logs(course)
-    return render(request, 'course/history_logs.html', {'logs': logs})
+    count_logs = logs.count()
+    return render(request, 'course/history_logs.html', {
+        'logs': logs,
+        'count_logs': count_logs,
+    })
 
 @login_required
 def teacher_list(request):
@@ -100,4 +104,8 @@ def delete_teacher(request, teacher_id):
 def history_teacher_logs(request, teacher_id):
     teacher = get_object_or_404(Teacher, id=teacher_id)
     logs = get_logs(teacher)
-    return render(request, 'teacher/history_logs.html', {'logs': logs})
+    count_logs = logs.count()
+    return render(request, 'teacher/history_logs.html', {
+        'logs': logs,
+        'count_logs': count_logs,
+    })
