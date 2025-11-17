@@ -14,6 +14,7 @@
                 <tr>
                     <th>Назва курсу:</th>
                     <th>Напрямок:</th>
+                    <th>Вчитель:</th>
                     <th>Опис:</th>
                     <th>Кількість студентів:</th>
                     <th>Час створення:</th>
@@ -25,12 +26,15 @@
                     <tr>
                         <td>{{ course.title }}</td>
                         <td>{{ course.direction }}</td>
+                        <td>{{ course.teacher }}</td>
                         <td>{{ course.description }}</td>
                         <td>{{ course.count_members }} / {{ course.limit_members }}</td>
                         <td>{{ course.created_at|date:"d.m.Y H.i" }}</td>
                         <td>
                             <a href="{% url 'courses_app:update_course' course.id %}"
                                class="btn btn-primary">Оновити курс</a>
+                            <a href="{% url 'courses_app:history_course_logs' course.id %}"
+                               class="btn btn-warning">Історія логів</a>
                             <a href="{% url 'courses_app:delete_course' course.id %}"
                             class="btn btn-danger">Видалити</a>
                         </td>
@@ -40,6 +44,8 @@
         </table>
     </div>
     <a href="{% url 'courses_app:create_course' %}" class="btn btn-success">Створити курс</a>
+    <a href="{% url 'courses_app:teacher_list' %}" class="btn btn-info">Список вчителів</a>
     <a href="{% url 'members_app:member_list' %}" class="btn btn-info">Список учасників</a>
+    <a href="{% url 'accounts:action_logs_list' %}" class="btn btn-info">Список логів</a>
 </body>
 </html>

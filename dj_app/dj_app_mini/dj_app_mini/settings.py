@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'courses_app.apps.CoursesAppConfig',
     'members_app.apps.MembersAppConfig',
     'accounts.apps.AccountsConfig',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

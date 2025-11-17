@@ -1,6 +1,10 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.utils import timezone
+from django.contrib.contenttypes.models import ContentType
+# from django.contrib.auth import get_user_model
+# User = get_user_model()
 
 class CourseUserManager(BaseUserManager):
     def create_user(self, email, phone_number, password=None, **extra_fields):
@@ -59,6 +63,45 @@ class CourseUser(AbstractBaseUser, PermissionsMixin):
     @property
     def full_name(self):
         return f'{self.first_name} {self.last_name}'.strip()
+
+class BillingAdress(models.Model):
+    user = models.ForeignKey(CourseUser, on_delete=models.CASCADE, related_name='adresses')
+    city = models.CharField(max_length=95, verbose_name='Місто')
+    street = models.CharField(max_length=145, verbose_name='Вулиця')
+    postal_code = models.CharField(max_length=10, verbose_name='Почтовий індекс')
+
+    class Meta:
+        verbose_name = 'Адреса для платежів'
+        verbose_name_plural = 'Адреси для платежів'
+
+class ActionLog(models.Model):
+    name_log = models.CharField(max_length=35)
+    user = models.ForeignKey('accounts.CourseUser', on_delete=models.CASCADE, related_name='logs')
+    action_type = models.CharField(default="Немає дій", blank=False)
+    timestamp = models.DateTimeField(auto_now=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    model_log = GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self):
+        return f'{self.name_log} -- {self.model_log} -- {self.action_type} -- {self.object_id}'
+
+class DynamicLink(models.Model):
+    model_ct = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='outgoing_links')
+    model_id = models.PositiveIntegerField()
+    source = GenericForeignKey('model_ct', 'model_id')
+
+    target_ct = models.ForeignKey(ContentType, on_delete=models.CASCADE, related_name='incoming_links')
+    target_id = models.PositiveIntegerField()
+    target = GenericForeignKey('target_ct', 'target_id')
+    relation_type = models.CharField(max_length=90)
+    create_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.source} -- {self.relation_type} -- {self.target}'
+
+
+
 
 
 

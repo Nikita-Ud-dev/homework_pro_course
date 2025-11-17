@@ -1,11 +1,11 @@
 from django import forms
-from .models import Course
-# from homework_pro_course.dj_app.dj_app_mini.members_app.models import User
+from courses_app.models import Course, Teacher
+
 
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['title', 'direction', 'description', 'list_of_members', 'limit_members']
+        fields = ['title', 'direction', 'teacher', 'description', 'list_of_members', 'limit_members']
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': 'Введіть назву курсу', 'class': 'form-control'}),
             'direction': forms.TextInput(attrs={'placeholder': 'Введіть назву напрямку', 'class': 'form-control'}),
@@ -53,6 +53,12 @@ class CourseForm(forms.ModelForm):
     #         raise forms.ValidationError(f'Кількість учасників не може перевищувати {limit}.')
     #     return members
 
+    def clean_teacher(self):
+        teacher = self.cleaned_data.get('teacher')
+        if not teacher:
+            raise forms.ValidationError('Виберіть "викладача"')
+        return teacher
+
     def clean_limit_members(self):
         limit = self.cleaned_data.get('limit_members')
         if limit < 5:
@@ -66,3 +72,36 @@ class CourseForm(forms.ModelForm):
     #     super().__init__(*args, **kwargs)
     #     if user:
     #         self.fields['']
+
+class TeacherForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = ['first_name', 'last_name', 'age', 'gender']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'placeholder': "Введіть і'мя", 'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'placeholder': "Введіть фамілію", 'class': 'form-control'}),
+            'age': forms.NumberInput(attrs={'placeholder': "Введіть вік: від 22 до 55", 'class': 'form-control'}),
+        }
+
+        help_texts = {
+            'first_name': "(Ввід: Обов'язково)",
+            'last_name': "(Ввід: Не Обов'язково)",
+            'course': "(Вибір: Обов'язково)",
+            'age': "(Ввід: Обов'язково)",
+            'gender': "(Вибір: Обов'язково)",
+        }
+
+    def clean_age(self):
+        age = self.cleaned_data.get('age')
+        if age < 22:
+            raise forms.ValidationError('Учаснику не може бути менше 22 років')
+        elif age > 55:
+            raise forms.ValidationError('Учаснику не може бути більше 55 років')
+        return age
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance and self.instance.pk:
+            self.fields['gender'].choices = self.fields['gender'].choices[1:]
+

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список логів</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <h2>Список логів:</h2>
+    <h4>Кількість логів: {{ count_logs }}</h4>
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Модель:</th>
+                    <th>Об'єкт логуваня:</th>
+                    <th>Користувач:</th>
+                    <th>Дія з об'єктом:</th>
+                    <th>Час створення:</th>
+                    <th>Індифікаційний номер:</th>
+                    <th>ДіЇ:(В розробці:) )</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr>
+                        <td>{{ log.name_log }}</td>
+                        <td>{{ log.model_log }}</td>
+                        <td>{{ log.user }}</td>
+                        <td>{{ log.action_type }}</td>
+                        <td>{{ log.timestamp|date:"d.m.Y H:i" }}</td>
+                        <td>{{ log.object_id }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{% url 'courses_app:teacher_list' %}" class="btn btn-secondary">Назад</a>
+</body>
+</html>

@@ -1,6 +1,6 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from .gender_models import GenderChoices
+from members_app.gender_models import GenderChoices
 
 # Create your models here.
 

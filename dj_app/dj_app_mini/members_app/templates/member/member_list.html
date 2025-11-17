@@ -41,6 +41,8 @@
                         <td>
                             <a href="{% url 'members_app:update_member' member.id %}"
                                class="btn btn-primary">Оновити учасника</a>
+                            <a href="{% url 'members_app:history_member_logs' member.id %}"
+                               class="btn btn-warning">Історія логів</a>
                             <a href="{% url 'members_app:delete_member' member.id %}"
                             class="btn btn-danger">Видалити</a>
                         </td>
@@ -53,7 +55,9 @@
             </tbody>
         </table>
     </div>
-    <a href="{% url 'members_app:create_member' %}" class="btn btn-primary">Створити учасника</a>
+    <a href="{% url 'members_app:create_member' %}" class="btn btn-success">Створити учасника</a>
+    <a href="{% url 'courses_app:teacher_list' %}" class="btn btn-info">Список вчителів</a>
     <a href="{% url 'courses_app:course_list' %}" class="btn btn-info">Список курсів</a>
+    <a href="{% url 'accounts:action_logs_list' %}" class="btn btn-info">Список логів</a>
 </body>
 </html>

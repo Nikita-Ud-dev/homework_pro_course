@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Видалити учасника</title>
+    <title>Видалити викладача:</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h2>Видалити учасника:</h2>
-    <p>Ви впевненні що хочете видалити цього учасника "{{ member.first_name }} {{ member.last_name }}"?</p>
+    <h2>Видалити вчителя:</h2>
+    <p>Ви впевненні що хочете видалити цього викладача "{{ teacher.first_name }} {{ teacher.last_name }}"?</p>
     <form method="post">
         {% csrf_token %}
             <button type="submit" class="btn btn-danger">Видалити</button>
-            <a href="{% url 'members_app:member_list' %}" class="btn btn-primary">Скасувати</a>
+            <a href="{% url 'courses_app:teacher_list' %}" class="btn btn-primary">Скасувати</a>
     </form>
 </body>
 </html>

@@ -1,7 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-
-from .models import Member
+from members_app.models import Member
 
 class MemberForm(forms.ModelForm):
     class Meta:
