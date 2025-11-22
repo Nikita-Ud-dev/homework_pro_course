@@ -29,6 +29,7 @@ class MemberForm(forms.ModelForm):
         return age
 
     def __init__(self, *args, **kwargs):
+        creator = kwargs.pop('creator', None)
         super().__init__(*args, **kwargs)
 
         if self.instance and self.instance.pk:

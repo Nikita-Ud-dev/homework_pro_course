@@ -30,22 +30,24 @@
                         <td>{{ course.description }}</td>
                         <td>{{ course.count_members }} / {{ course.limit_members }}</td>
                         <td>{{ course.created_at|date:"d.m.Y H.i" }}</td>
+                        {% if request.user == course.creator or request.user.is_superuser and can_edit %}
                         <td>
-                            <a href="{% url 'courses_app:update_course' course.id %}"
+                            <a href="{% url 'courses_app:update_course_cbv' course.id %}"
                                class="btn btn-primary">Оновити курс</a>
-                            <a href="{% url 'courses_app:history_course_logs' course.id %}"
+                            <a href="{% url 'courses_app:history_logs_course_cbv' course.id %}"
                                class="btn btn-warning">Історія логів</a>
-                            <a href="{% url 'courses_app:delete_course' course.id %}"
+                            <a href="{% url 'courses_app:delete_course_cbv' course.id %}"
                             class="btn btn-danger">Видалити</a>
                         </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    <a href="{% url 'courses_app:create_course' %}" class="btn btn-success">Створити курс</a>
-    <a href="{% url 'courses_app:teacher_list' %}" class="btn btn-info">Список вчителів</a>
-    <a href="{% url 'members_app:member_list' %}" class="btn btn-info">Список учасників</a>
-    <a href="{% url 'accounts:action_logs_list' %}" class="btn btn-info">Список логів</a>
+    <a href="{% url 'courses_app:create_course_cbv' %}" class="btn btn-success">Створити курс</a>
+    <a href="{% url 'courses_app:teachers_list_cbv' %}" class="btn btn-info">Список вчителів</a>
+    <a href="{% url 'members_app:members_list_cbv' %}" class="btn btn-info">Список учасників</a>
+    <a href="{% url 'accounts:action_logs_list_cbv' %}" class="btn btn-info">Список логів</a>
 </body>
 </html>

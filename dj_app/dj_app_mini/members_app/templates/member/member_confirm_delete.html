@@ -12,7 +12,7 @@
     <form method="post">
         {% csrf_token %}
             <button type="submit" class="btn btn-danger">Видалити</button>
-            <a href="{% url 'members_app:member_list' %}" class="btn btn-primary">Скасувати</a>
+            <a href="{% url 'members_app:members_list_cbv' %}" class="btn btn-primary">Скасувати</a>
     </form>
 </body>
 </html>

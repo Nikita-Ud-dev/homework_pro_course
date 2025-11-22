@@ -29,11 +29,11 @@
                         <td>{{ teacher.age}}</td>
                         <td>{% if teacher.gender == "M" %}Чоловіча{% else %}Жіноча{% endif %}</td>
                         <td>
-                            <a href="{% url 'courses_app:update_teacher' teacher.id %}"
+                            <a href="{% url 'courses_app:update_teacher_cbv' teacher.id %}"
                                class="btn btn-primary">Оновити вчителя</a>
-                            <a href="{% url 'courses_app:history_teacher_logs' teacher.id %}"
+                            <a href="{% url 'courses_app:history_logs_teacher_cbv' teacher.id %}"
                                class="btn btn-warning">Історія логів</a>
-                            <a href="{% url 'courses_app:delete_teacher' teacher.id %}"
+                            <a href="{% url 'courses_app:delete_teacher_cbv' teacher.id %}"
                             class="btn btn-danger">Видалити</a>
                         </td>
                     </tr>
@@ -41,9 +41,9 @@
             </tbody>
         </table>
     </div>
-    <a href="{% url 'courses_app:create_teacher' %}" class="btn btn-success">Створити вчителя</a>
-    <a href="{% url 'courses_app:course_list' %}" class="btn btn-info">Список курсів</a>
-    <a href="{% url 'members_app:member_list' %}" class="btn btn-info">Список учасників</a>
-    <a href="{% url 'accounts:action_logs_list' %}" class="btn btn-info">Список логів</a>
+    <a href="{% url 'courses_app:create_teacher_cbv' %}" class="btn btn-success">Створити вчителя</a>
+    <a href="{% url 'courses_app:courses_list_cbv' %}" class="btn btn-info">Список курсів</a>
+    <a href="{% url 'members_app:members_list_cbv' %}" class="btn btn-info">Список учасників</a>
+    <a href="{% url 'accounts:action_logs_list_cbv' %}" class="btn btn-info">Список логів</a>
 </body>
 </html>

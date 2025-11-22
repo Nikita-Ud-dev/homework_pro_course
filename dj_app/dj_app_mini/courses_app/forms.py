@@ -23,6 +23,7 @@ class CourseForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        creator = kwargs.pop('creator', None)
         super().__init__(*args, **kwargs)
 
         instance = kwargs.get('instance')
@@ -100,6 +101,7 @@ class TeacherForm(forms.ModelForm):
         return age
 
     def __init__(self, *args, **kwargs):
+        creator = kwargs.pop('creator', None)
         super().__init__(*args, **kwargs)
 
         if self.instance and self.instance.pk:
