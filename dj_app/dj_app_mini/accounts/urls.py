@@ -8,5 +8,5 @@ app_name = 'accounts'
 
 urlpatterns = [
     path('list/', action_logs_list, name='action_logs_list'),
-    path('list_cbv/', action_logs_list, name='action_logs_list_cbv'),
+    path('list_cbv/', LogListView.as_view(), name='action_logs_list_cbv'),
 ]

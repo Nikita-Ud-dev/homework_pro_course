@@ -54,6 +54,9 @@ class CourseUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = 'Користувач'
         verbose_name_plural = 'Користувачі'
+        # permissions = [
+        #     ()
+        # ]
 
     def __str__(self):
         return self.email
@@ -74,6 +77,7 @@ class BillingAdress(models.Model):
 
 class ActionLog(models.Model):
     name_log = models.CharField(max_length=35)
+    name_object = models.CharField(max_length=50, null=True)
     user = models.ForeignKey('accounts.CourseUser', on_delete=models.CASCADE, related_name='logs')
     action_type = models.CharField(default="Немає дій", blank=False)
     timestamp = models.DateTimeField(auto_now=True)

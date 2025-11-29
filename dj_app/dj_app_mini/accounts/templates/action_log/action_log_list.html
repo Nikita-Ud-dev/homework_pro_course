@@ -9,6 +9,10 @@
 <body>
     <h2>Список логів:</h2>
     <h4>Кількість логів: {{ count_logs }}</h4>
+     <form method="get">
+        <input type="text" name="search" placeholder="{{ search_field }}" value="{{ search }}">
+        <button type="submit">Пошук</button>
+    </form>
     <div>
         <table class="table table-bordered">
             <thead>
@@ -26,7 +30,14 @@
                 {% for log in logs %}
                     <tr>
                         <td>{{ log.name_log }}</td>
-                        <td>{{ log.model_log }}</td>
+
+                        <td>
+                            {% if log.model_log == None %}
+                                {{ log.name_object }}
+                            {% else %}
+                                {{ log.model_log }}
+                            {% endif %}
+                        </td>
                         <td>{{ log.user }}</td>
                         <td>{{ log.action_type }}</td>
                         <td>{{ log.timestamp|date:"d.m.Y H:i" }}</td>

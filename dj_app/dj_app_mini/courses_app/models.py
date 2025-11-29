@@ -19,7 +19,6 @@ class Course(models.Model):
     list_of_members = ManyToManyField('members_app.Member', blank=True, related_name='courses')
     limit_members = models.PositiveIntegerField(null=False, validators=[MinValueValidator(5), MaxValueValidator(100)])
 
-
     def __str__(self):
         return self.title
 
@@ -30,6 +29,9 @@ class Teacher(models.Model):
     # course = models.OneToOneField('courses_app.Course', blank=False, null=True, on_delete=models.SET_NULL, related_name='teacher')
     age = models.IntegerField(null=False, blank=False, validators=[MinValueValidator(22), MaxValueValidator(55)])
     gender = models.CharField(max_length=1, choices=GenderChoices.choices, blank=False, null=False)
+
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

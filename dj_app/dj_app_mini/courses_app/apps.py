@@ -1,3 +1,5 @@
+import sys
+
 from django.apps import AppConfig
 
 
@@ -6,5 +8,8 @@ class CoursesAppConfig(AppConfig):
     name = 'courses_app'
 
     def ready(self):
-        import courses_app.signals
-        import courses_app.utils
+        if 'makemigrations' in sys.argv or 'migrate' in sys.argv:
+            return
+        else:
+            from courses_app.utils import init_action_log_generic_relations
+            init_action_log_generic_relations()

@@ -8,6 +8,17 @@
 </head>
 <body>
     <h2>Список учасників:</h2>
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div>{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="get">
+        <input type="text" name="search" placeholder="{{ search_field }}" value="{{ search }}">
+        <button type="submit">Пошук</button>
+    </form>
     <div>
         <table class="table table-bordered">
             <thead>

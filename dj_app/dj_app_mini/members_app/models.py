@@ -16,6 +16,9 @@ class Member(models.Model):
     age = models.IntegerField(null=False, blank=False, validators=[MinValueValidator(16), MaxValueValidator(40)])
     gender = models.CharField(max_length=1, choices=GenderChoices.choices, blank=False, null=False)
 
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
+
     def __str__(self):
         return self.first_name
 

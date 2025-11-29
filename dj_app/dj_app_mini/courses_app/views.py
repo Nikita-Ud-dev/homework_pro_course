@@ -10,6 +10,12 @@ from courses_app.models import Course, Teacher
 from courses_app.forms import CourseForm, TeacherForm
 from courses_app.utils import get_logs
 from accounts.current_user import set_current_user
+from courses_app.mixins import (
+    AdditionalFormKwargMixin, UserObjectFilterMixin, SetUserMixin,
+    CreateActionLogMixin, UpdateActionLogMixin, DeleteActionLogMixin,
+    SuccessMessageFormMixin, SuccessMessageDeleteMixin, SearchFilterMixin,
+    SearchMultiFilterMixin,
+)
 from accounts.models import ActionLog
 # Create your views here.
 
@@ -69,18 +75,15 @@ def history_course_logs(request, course_id):
         'count_logs': count_logs,
     })
 
-class CourseListView(LoginRequiredMixin, ListView):
+class CourseListView(LoginRequiredMixin, PermissionRequiredMixin, SearchFilterMixin, UserObjectFilterMixin, ListView):
     model = Course
     template_name = 'course/course_list.html'
     context_object_name = 'courses'
     admin_only = False
     white_list = ['l1x@example.com']
-
-    def get_queryset(self):
-        queryset_courses = super().get_queryset().annotate(count_members=Count('list_of_members'))
-        if self.request.user.is_superuser and self.admin_only and self.request.user.email in self.white_list:
-            return queryset_courses
-        return queryset_courses.filter(creator=self.request.user)
+    permission_required = 'courses_app.view_course'
+    search_field = 'Пошук курсу по назві:'
+    search_name_field = 'title'
 
 class AdminCourseListView(CourseListView):
     admin_only = True
@@ -94,59 +97,49 @@ class AdminCourseListView(CourseListView):
 class UserCourseListView(CourseListView):
     pass
 
-class CourseCreateView(LoginRequiredMixin, CreateView):
+class CourseCreateView(LoginRequiredMixin, PermissionRequiredMixin, AdditionalFormKwargMixin, SuccessMessageFormMixin, CreateActionLogMixin, CreateView):
     model = Course
     form_class = CourseForm
     template_name = 'course/create_course.html'
     success_url = reverse_lazy('courses_app:courses_list_cbv')
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['creator'] = self.request.user
-        return form_kwargs
-
-    def dispatch(self, request, *args, **kwargs):
-        set_current_user(request.user)
-        return super().dispatch(request, *args, **kwargs)
+    log_name_field = 'title'
+    permission_required = 'courses_app.add_course'
+    message = True
+    success_message = f'успішно створено'
 
     def form_valid(self, form):
         form.instance.creator = self.request.user
         return super().form_valid(form)
 
-class CourseUpdateView(LoginRequiredMixin, UpdateView):
+class CourseUpdateView(LoginRequiredMixin, PermissionRequiredMixin, AdditionalFormKwargMixin, SuccessMessageFormMixin, UpdateActionLogMixin, SetUserMixin, UpdateView):
     model = Course
     pk_url_kwarg = 'course_id'
     form_class = CourseForm
     template_name = 'course/update_course.html'
     success_url = reverse_lazy('courses_app:courses_list_cbv')
+    log_name_field = 'title'
+    permission_required = 'courses_app.change_course'
+    message = True
+    success_message = f'успішно оновленно'
 
     def get_queryset(self):
         return Course.objects.filter(creator=self.request.user)
 
-    def dispatch(self, request, *args, **kwargs):
-        set_current_user(request.user)
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['creator'] = self.request.user
-        return form_kwargs
-
-class CourseDeleteView(LoginRequiredMixin, DeleteView):
+class CourseDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteActionLogMixin, SuccessMessageDeleteMixin, DeleteView):
     model = Course
     pk_url_kwarg = 'course_id'
     template_name = 'course/course_confirm_delete.html'
     success_url = reverse_lazy('courses_app:courses_list_cbv')
+    log_name_field = 'title'
+    permission_required = 'courses_app.delete_course'
+    message = True
+    success_message = f'успішно видалено'
 
-    def dispatch(self, request, *args, **kwargs):
-        set_current_user(request.user)
-        return super().dispatch(request, *args, **kwargs)
-
-class CourseHistoryLogsView(LoginRequiredMixin, DetailView):
+class CourseHistoryLogsView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Course
     pk_url_kwarg = 'course_id'
     template_name = 'course/history_logs.html'
-    # context_object_name = 'logs'
+    permission_required = 'courses_app.view_course'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -215,18 +208,15 @@ def history_teacher_logs(request, teacher_id):
         'count_logs': count_logs,
     })
 
-class TeacherListView(LoginRequiredMixin, ListView):
+class TeacherListView(LoginRequiredMixin, PermissionRequiredMixin, SearchMultiFilterMixin, UserObjectFilterMixin, ListView):
     model = Teacher
     template_name = 'teacher/teacher_list.html'
     context_object_name = 'teachers'
     admin_only = False
+    permission_required = 'courses_app.view_teacher'
     white_list = ['l1x@example.com']
-
-    def get_queryset(self):
-        queryset = super().get_queryset().all()
-        if self.request.user.is_superuser and self.admin_only and self.request.user.email in self.white_list:
-            return queryset
-        return queryset.filter(creator=self.request.user)
+    search_field = 'Пошук викладача по імені і фамілії:'
+    search_name_field_list = ['first_name', 'last_name']
 
 class AdminTeacherListView(TeacherListView):
     admin_only = True
@@ -240,58 +230,43 @@ class AdminTeacherListView(TeacherListView):
 class UserTeacherListView(TeacherListView):
     pass
 
-class TeacherCreateView(LoginRequiredMixin, CreateView):
+class TeacherCreateView(LoginRequiredMixin, PermissionRequiredMixin, AdditionalFormKwargMixin, CreateActionLogMixin, CreateView):
     model = Teacher
     form_class = TeacherForm
     template_name = 'teacher/create_teacher.html'
     success_url = reverse_lazy('courses_app:teachers_list_cbv')
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['creator'] = self.request.user
-        return form_kwargs
-
-    def dispatch(self, request, *args, **kwargs):
-        set_current_user(request.user)
-        return super().dispatch(request, *args, **kwargs)
+    log_name_field = 'full_name'
+    permission_required = 'courses_app.add_teacher'
 
     def form_valid(self, form):
         form.instance.creator = self.request.user
         return super().form_valid(form)
 
-class TeacherUpdateView(LoginRequiredMixin, UpdateView):
+class TeacherUpdateView(LoginRequiredMixin, PermissionRequiredMixin, AdditionalFormKwargMixin, UpdateActionLogMixin, UpdateView):
     model = Teacher
     pk_url_kwarg = 'teacher_id'
     form_class = TeacherForm
     template_name = 'teacher/update_teacher.html'
     success_url = reverse_lazy('courses_app:teachers_list_cbv')
+    log_name_field = 'full_name'
+    permission_required = 'courses_app.change_teacher'
 
     def get_queryset(self):
         return Teacher.objects.filter(creator=self.request.user)
 
-    def dispatch(self, request, *args, **kwargs):
-        set_current_user(request.user)
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['creator'] = self.request.user
-        return form_kwargs
-
-class TeacherDeleteView(LoginRequiredMixin, DeleteView):
+class TeacherDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteActionLogMixin, DeleteView):
     model = Teacher
     pk_url_kwarg = 'teacher_id'
     template_name = 'teacher/teacher_confirm_delete.html'
     success_url = reverse_lazy('courses_app:teachers_list_cbv')
+    log_name_field = 'full_name'
+    permission_required = 'courses_app.delete_teacher'
 
-    def dispatch(self, request, *args, **kwargs):
-        set_current_user(request.user)
-        return super().dispatch(request, *args, **kwargs)
-
-class TeacherHistoryLogsView(LoginRequiredMixin, DetailView):
+class TeacherHistoryLogsView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Teacher
     pk_url_kwarg = 'teacher_id'
     template_name = 'teacher/history_logs.html'
+    permission_required = 'courses_app.view_teacher'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -302,3 +277,5 @@ class TeacherHistoryLogsView(LoginRequiredMixin, DetailView):
         context['logs'] = logs
         context['count_logs'] = logs.count()
         return context
+
+

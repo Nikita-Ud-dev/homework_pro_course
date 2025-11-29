@@ -7,6 +7,12 @@ from members_app.models import Member
 from members_app.forms import MemberForm
 from courses_app.utils import get_logs
 from accounts.current_user import set_current_user
+from courses_app.mixins import (
+    AdditionalFormKwargMixin, UserObjectFilterMixin, SetUserMixin,
+    CreateActionLogMixin, UpdateActionLogMixin, DeleteActionLogMixin,
+    SearchMultiFilterMixin,
+)
+
 
 # Create your views here.
 
@@ -62,19 +68,15 @@ def history_member_logs(request, member_id):
     })
 
 
-class MemberListView(LoginRequiredMixin, ListView):
+class MemberListView(LoginRequiredMixin, PermissionRequiredMixin, SearchMultiFilterMixin, UserObjectFilterMixin, ListView):
     model = Member
     template_name = 'member/member_list.html'
     context_object_name = 'members'
     admin_only = False
     white_list = ['l1x@example.com']
-
-    def get_queryset(self):
-        queryset = super().get_queryset().all()
-        if self.request.user.is_superuser and self.admin_only and self.request.user.email in self.white_list:
-            return queryset
-        return queryset.filter(creator=self.request.user)
-
+    permission_required = 'members_app.view_member'
+    search_field = 'Пошук студента по імені і фамілії:'
+    search_name_field_list = ['first_name', 'last_name']
 
 class AdminMemberListView(MemberListView):
     admin_only = True
@@ -85,65 +87,45 @@ class AdminMemberListView(MemberListView):
         context['can_edit'] = self.can_edit
         return context
 
-
 class UserMemberListView(MemberListView):
     pass
 
-
-class MemberCreateView(LoginRequiredMixin, CreateView):
+class MemberCreateView(LoginRequiredMixin, PermissionRequiredMixin, AdditionalFormKwargMixin, CreateActionLogMixin, CreateView):
     model = Member
     form_class = MemberForm
     template_name = 'member/create_member.html'
     success_url = reverse_lazy('members_app:members_list_cbv')
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['creator'] = self.request.user
-        return form_kwargs
-
-    def dispatch(self, request, *args, **kwargs):
-        set_current_user(request.user)
-        return super().dispatch(request, *args, **kwargs)
+    log_name_field = 'full_name'
+    permission_required = 'members_app.add_member'
 
     def form_valid(self, form):
         form.instance.creator = self.request.user
         return super().form_valid(form)
 
-
-class MemberUpdateView(LoginRequiredMixin, UpdateView):
+class MemberUpdateView(LoginRequiredMixin, PermissionRequiredMixin, AdditionalFormKwargMixin, UpdateActionLogMixin, UpdateView):
     model = Member
     pk_url_kwarg = 'member_id'
     form_class = MemberForm
     template_name = 'member/update_member.html'
     success_url = reverse_lazy('members_app:members_list_cbv')
+    log_name_field = 'full_name'
 
     def get_queryset(self):
         return Member.objects.filter(creator=self.request.user)
 
-    def dispatch(self, request, *args, **kwargs):
-        set_current_user(request.user)
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['creator'] = self.request.user
-        return form_kwargs
-
-
-class MemberDeleteView(LoginRequiredMixin, DeleteView):
+class MemberDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteActionLogMixin, DeleteView):
     model = Member
     pk_url_kwarg = 'member_id'
     template_name = 'member/member_confirm_delete.html'
     success_url = reverse_lazy('members_app:members_list_cbv')
+    log_name_field = 'full_name'
+    permission_required = 'members_app.delete_member'
 
-    def dispatch(self, request, *args, **kwargs):
-        set_current_user(request.user)
-        return super().dispatch(request, *args, **kwargs)
-
-class MemberHistoryLogsView(LoginRequiredMixin, DetailView):
+class MemberHistoryLogsView(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = Member
     pk_url_kwarg = 'member_id'
     template_name = 'member/history_logs.html'
+    permission_required = 'members_app.view_member'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
