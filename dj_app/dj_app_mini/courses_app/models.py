@@ -14,7 +14,7 @@ class Course(models.Model):
     description = models.TextField(max_length=500,  null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, null=False, related_name='courses')
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False, related_name='courses')
     teacher = models.OneToOneField('courses_app.Teacher', null=True, blank=True, on_delete=models.SET_NULL, related_name='course')
     list_of_members = ManyToManyField('members_app.Member', blank=True, related_name='courses')
     limit_members = models.PositiveIntegerField(null=False, validators=[MinValueValidator(5), MaxValueValidator(100)])
