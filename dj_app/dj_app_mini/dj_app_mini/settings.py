@@ -12,8 +12,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from mmap import ACCESS_DEFAULT
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+import os
 
-from django.conf.global_settings import AUTH_USER_MODEL
+load_dotenv()
+
+from django.conf.global_settings import AUTH_USER_MODEL, MEDIA_URL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,12 +27,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-m1&s&)&x4bda=e!2qx5@yiis*%5f1@w=7o5)&hqw&r)gr(8580'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-m1&s&)&x4bda=e!2qx5@yiis*%5f1@w=7o5)&hqw&r)gr(8580')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -85,10 +89,10 @@ WSGI_APPLICATION = 'dj_app_mini.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'course_db',
-        'USER': 'postgres',
-        'PASSWORD': '1234567',
-        'HOST': 'localhost',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST'),
         'PORT': '5432',
     }
 }
@@ -129,6 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -159,3 +164,9 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ('Test_Header',),
 }
+
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
