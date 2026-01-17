@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список пропозіцію продажі продуктів</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <h2>Список пропозіцій продажі продуктів:</h2>
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Назва продукту:</th>
+                    <th>Продавець:</th>
+                    <th>Ціна:</th>
+                    <th>Кількість продукту:</th>
+                    <th>Знижка на продукт:</th>
+                    <th>Наявність:</th>
+                    <th>Час створення:</th>
+                    <th>ДіЇ:</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for seller_product in products_sellers %}
+                    <tr>
+                        <td>{{ seller_product.product }}</td>
+                        <td>{{ seller_product.seller }}</td>
+                        <td>{{ seller_product.price }}</td>
+                        <td>{{ seller_product.quantity }}</td>
+                        <td>{{ seller_product.discount }}</td>
+                        <td>{{ seller_product.is_active }}</td>
+                        <td>{{ seller_product.created_at|date:"d.m.Y H.i" }}</td>
+                        <td>
+                            <a href="{% url 'online_store_app:product_seller_update' seller_product.id %}"
+                               class="btn btn-primary">Оновити продукт</a>
+                            <a href="{% url 'online_store_app:product_seller_delete' seller_product.id %}"
+                            class="btn btn-danger">Видалити</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'online_store_app:product_seller_create' %}" class="btn btn-success">Створити пропозіцію продажі продукту</a>
+    </div>
+    <a href="{% url 'online_store_app:product_list' %}" class="btn btn-success">Список продуктів</a>
+</body>
+</html>

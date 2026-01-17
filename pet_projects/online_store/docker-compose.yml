@@ -1,0 +1,74 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: ./online_store_backend
+      dockerfile: Dockerfile
+    command: web
+    volumes:
+      - ./online_store_backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./online_store_backend/.env
+    depends_on:
+      - online_store_db
+      - redis
+
+  online_store_db:
+    image: postgres:16-alpine
+    env_file:
+      - ./online_store_backend/.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  frontend:
+    build:
+      context: ./online_store_frontend/web
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./online_store_frontend/web:/app
+      - ./frontend_node_modules:/app/node_modules
+    depends_on:
+      - web
+
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  celery_beat:
+    build:
+      context: ./online_store_backend
+      dockerfile: Dockerfile
+    command: beat
+    volumes:
+      - ./online_store_backend:/app
+    env_file:
+      - ./online_store_backend/.env
+    depends_on:
+      - online_store_db
+      - redis
+
+  celery_worker:
+    build:
+      context: ./online_store_backend
+      dockerfile: Dockerfile
+    command: worker
+    volumes:
+      - ./online_store_backend:/app
+    env_file:
+      - ./online_store_backend/.env
+    depends_on:
+      - online_store_db
+      - redis
+
+volumes:
+  pg_data:
+  frontend_node_modules:

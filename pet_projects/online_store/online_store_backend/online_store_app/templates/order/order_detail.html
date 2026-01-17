@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Деталі замовлення:</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <h2>Замовлення:</h2>
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Номер замовлення:</th>
+                    <th>Статус замовлення:</th>
+                    <th>Вартість замовлення:</th>
+                    <th>Час створення:</th>
+                    <th>ДіЇ:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Замовлення №{{ order.id }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>{{ order.total_price }}</td>
+                    <td>{{ order.created_at|date:"d.m.Y H.i" }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <h2>Деталі замовлення:</h2>
+         <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Номер замовлення:</th>
+                    <th>Продукт:</th>
+                    <th>Пропозиція продавця продукту:</th>
+                    <th>Вартість замовлення:</th>
+                    <th>Час створення:</th>
+                    <th>ДіЇ:</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items.all %}
+                    <tr>
+                        <td>Замовлення №{{ order.id }}</td>
+                        <td>{{ item.product_seller.product.title }}</td>
+                        <td>{{ item.price_at_time }}</td>
+                        <td>{{ item.created_at|date:"d.m.Y H.i" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'online_store_app:order_list' %}" class="btn btn-primary">Список замовлень</a>
+    </div>
+</body>
+</html>
